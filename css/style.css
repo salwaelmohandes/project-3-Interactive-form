@@ -118,7 +118,7 @@ button {
 }
 
 button:hover {
-	background: #6F9DDC;
+	background: rgb(38, 5, 64);
 }
 
 input, 
