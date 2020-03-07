@@ -1,3 +1,4 @@
+
 // Select the name input element and place focus on it.
 const name = document.getElementById("name");   
 name.focus();
@@ -7,25 +8,26 @@ const otherTitle = document.getElementById("other-title");
 otherTitle.parentNode.setAttribute("hidden",true);
 title.addEventListener('change', (e) => {
     if(e.target.value === 'other') {
-        otherTitle.parentNode.style.display='show';
-        otherTitle.parentNode.removeAttribute("hidden");
-    } else {
-        otherTitle.parentNode.setAttribute("hidden", true);
+       otherTitle.parentNode.style.display='show';
+       otherTitle.parentNode.removeAttribute("hidden");
+    }else{
+       otherTitle.parentNode.setAttribute("hidden", true);
     }
 });
 // Hide select theme option tag in the drop down menu.
 // Hide the colors in the color menu and update it to read “Please select a T-shirt theme”.
 // Update color menu & Show the appropriate colors only when one theme is selected.
 // Hide the color div until users select theme as an exceed expectations work.
+
 let selectTheme = document.getElementById("design");
 design.options[0].setAttribute("hidden",true);
 const colorDiv=document.getElementById('colors-js-puns');
 const color=document.getElementById("color");
 const firstColorOption=document.createElement("option");
-firstColorOption.textContent="please select a T-shirt theme";
-color.prepend(firstColorOption);
-firstColorOption.setAttribute("selected",true);
-colorDiv.setAttribute("hidden",true);
+    firstColorOption.textContent="please select a T-shirt theme";
+    color.prepend(firstColorOption);
+    firstColorOption.setAttribute("selected",true);
+    colorDiv.setAttribute("hidden",true);
 
     color.options[1].setAttribute("hidden",true);
     color.options[2].setAttribute("hidden",true);
@@ -50,6 +52,7 @@ design.addEventListener('change',(e) => {
     
     } else if (e.target.value === 'heart js') {
         colorDiv.removeAttribute("hidden");
+
         color.options[0].setAttribute("hidden", true);
         color.options[1].setAttribute("hidden", true);
         color.options[2].setAttribute("hidden", true);
@@ -133,11 +136,7 @@ payment.addEventListener('change',(e)=>{
         }
     }
 });
-// Create a validation function for each form field to check if the input value meets the requirements.
-// Create a single master validation function to test them all with a single function call.
-// Append an error messages element to the DOM near the input. 
-// Submit event listener on the form element to prevent the default submission if any fields are invalid.
-
+// Create a validation function for each form field to check if the input value meets the requirements. 
 const form = document.querySelector("form");
 const email = document.querySelector("#mail");
 const cardNum = document.querySelector("#cc-num");
@@ -158,7 +157,7 @@ const activitiesValidator = () => {
     }return false;
 }
 const cardNumValidator = () => {
-    return 13<= cardNum.value.length<=16 && /^\d$/.test(cardNum.value);
+    return /^\d{13}\d?\d?\d?$/.test(cardNum.value);
 }
 const cardZipValidator = () => {
     return  /^\d{5}$/.test(cardZip.value);
@@ -166,35 +165,75 @@ const cardZipValidator = () => {
 const cardCvvValidator = () => {
     return /^\d{3}$/.test(cardCvv.value);
 }
+// Append an error messages element to the DOM near the input.
+let eMessage = document.createElement('span');
+eMessage.textContent="Please enter a valid email address";
+eMessage.style.fontSize='1.3em';
+eMessage.style.color='#FFC300';
+eMessage.classList.add("error");
 
+let errMessage = document.createElement('span');
+errMessage.textContent="This field is required";
+errMessage.style.fontSize='1.3em';
+errMessage.style.color='#FFC300';
+errMessage.classList.add("error");
+
+// Submit event listener on the form element to prevent the default submission if any fields are invalid.
 form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        if (!nameValidator()){
-        name.style.backgroundColor = '#FFC300 ';
+    let errorMessages = document.getElementsByClassName("error");
+    for (i=0; i<=errorMessages.length; i+=1)
+    if (errorMessages.length > 0) {
+        errorMessages[0].remove();
     }
-        if (!emailValidator()){
-        email.style.backgroundColor = '#FFC300 ';
+    if (!nameValidator()){
+        name.style.borderColor = '#FFC300 ';
     }
-        if (!cardNumValidator()) {
-        cardNum.style.backgroundColor = '#FFC300 ';
+    // email validation
+    if (email.value === "") {
+        email.parentNode.insertBefore(errMessage, email.nextSibling);
+        email.style.borderColor = '#FFC300 ';
+    } else if(!emailValidator()){
+        email.parentNode.insertBefore(eMessage, email.nextSibling);
+        email.style.borderColor = '#FFC300 ';
+    }    
+    // credit card validation
+    if (payment.value == "credit card" && !cardNumValidator()) {
+        cardNum.style.borderColor = '#FFC300 ';
     }
-        if (payment.value == "credit card"&&!cardZipValidator()) {
-        cardZip.style.backgroundColor = '#FFC300 ';
+    if (payment.value == "credit card" && !cardZipValidator()) {
+        cardZip.style.borderColor = '#FFC300 ';
     }
-        if (payment.value == "credit card"&&!cardCvvValidator()) {
-        cardCvv.style.backgroundColor = '#FFC300 ';
+    if (payment.value == "credit card" && !cardCvvValidator()) {
+        cardCvv.style.borderColor = '#FFC300 ';
     }
+    // Activities validation
     let errorMessage = document.createElement("span")
     errorMessage.textContent = "x please check at least one checkbox.";
     errorMessage.style.color='#FFC300 ';
     errorMessage.style.fontSize='1.5em';
+    errorMessage.classList.add("error");
     if (!activitiesValidator()){
         activities.append(errorMessage);
     }
+    e.preventDefault();
 });
- 
+
+// Create real time error message and hide it when users complete the email format.
+email.addEventListener('keyup', () => { 
+    let errorMessages = document.getElementsByClassName("error");
+    if (errorMessages.length > 0) {
+        errorMessages[0].remove();
+    }
+    if (email.input==='') {
+        email.parentNode.insertBefore(errMessage, email.nextSibling);
+    }else if(!emailValidator()) {
+        email.parentNode.insertBefore(eMessage, email.nextSibling);
+    } 
+});
 
 
+
+    
 
 
 
