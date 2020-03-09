@@ -2,6 +2,7 @@
 // Select the name input element and place focus on it.
 const name = document.getElementById("name");   
 name.focus();
+
 // Target the other title and hide it until users choose it in the drop down menu.
 const title = document.getElementById("title");
 const otherTitle = document.getElementById("other-title");
@@ -153,8 +154,8 @@ const activitiesValidator = () => {
     for (let i=0; i<checkboxes.length; i+=1){
         if (checkboxes[i].checked){
         return true;
-        }   
-    }return false;
+        }
+    }
 }
 const cardNumValidator = () => {
     return /^\d{13}\d?\d?\d?$/.test(cardNum.value);
@@ -165,6 +166,7 @@ const cardZipValidator = () => {
 const cardCvvValidator = () => {
     return /^\d{3}$/.test(cardCvv.value);
 }
+
 // Append an error messages element to the DOM near the input.
 let eMessage = document.createElement('span');
 eMessage.textContent="Please enter a valid email address";
@@ -178,8 +180,23 @@ errMessage.style.fontSize='1.3em';
 errMessage.style.color='#FFC300';
 errMessage.classList.add("error");
 
+let errorMessage = document.createElement("span")
+errorMessage.textContent = "x please check at least one checkbox.";
+errorMessage.style.color='#FFC300 ';
+errorMessage.style.fontSize='1.5em';
+errorMessage.classList.add("error");
+
+let validation = ()=>{
+   if(!nameValidator()||!emailValidator()||!activitiesValidator()){
+   if(payment.value == "credit card"&&!cardNumValidator()||!cardZipValidator()||!cardCvvValidator()){
+   return !validation();
+      }return validation();
+   }
+};
+
 // Submit event listener on the form element to prevent the default submission if any fields are invalid.
 form.addEventListener("submit", (e) => {
+    const submit= document.querySelector("submit");
     let errorMessages = document.getElementsByClassName("error");
     for (i=0; i<=errorMessages.length; i+=1)
     if (errorMessages.length > 0) {
@@ -187,35 +204,57 @@ form.addEventListener("submit", (e) => {
     }
     if (!nameValidator()){
         name.style.borderColor = '#FFC300 ';
+        e.preventDefault();
+    }else{ 
+        name.style.borderColor='';
     }
-    // email validation
+    // Email validation check
     if (email.value === "") {
         email.parentNode.insertBefore(errMessage, email.nextSibling);
         email.style.borderColor = '#FFC300 ';
+        e.preventDefault();
     } else if(!emailValidator()){
         email.parentNode.insertBefore(eMessage, email.nextSibling);
         email.style.borderColor = '#FFC300 ';
-    }    
-    // credit card validation
+        e.preventDefault();
+    } else{
+        email.style.borderColor='';
+        errMessage.setAttribute("hidden",true);
+        eMessage.setAttribute("hidden",true);
+    }   
+    // Credit card validation check
     if (payment.value == "credit card" && !cardNumValidator()) {
         cardNum.style.borderColor = '#FFC300 ';
+        e.preventDefault();
+    }else{
+        cardNum.style.borderColor='';       
     }
     if (payment.value == "credit card" && !cardZipValidator()) {
         cardZip.style.borderColor = '#FFC300 ';
-    }
+        e.preventDefault();
+    } else{
+        cardZip.style.borderColor='';      
+    }   
     if (payment.value == "credit card" && !cardCvvValidator()) {
         cardCvv.style.borderColor = '#FFC300 ';
+        e.preventDefault();
+    }else{
+        cardCvv.style.borderColor='';    
     }
     // Activities validation
-    let errorMessage = document.createElement("span")
-    errorMessage.textContent = "x please check at least one checkbox.";
-    errorMessage.style.color='#FFC300 ';
-    errorMessage.style.fontSize='1.5em';
-    errorMessage.classList.add("error");
     if (!activitiesValidator()){
         activities.append(errorMessage);
+        e.preventDefault();
+    }else{ 
+        errorMessage.setAttribute("hidden",true);
+        e.addEventListener('submit');
     }
-    e.preventDefault();
+    if (!validation()){
+        e.preventDefault();
+    }else{
+        e.addEventListener(submit,true);
+    }
+//    validation();
 });
 
 // Create real time error message and hide it when users complete the email format.
